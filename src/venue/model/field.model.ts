@@ -3,11 +3,9 @@ import {
   Column,
   DataType,
   ForeignKey,
-  HasMany,
   Model,
   Table,
 } from 'sequelize-typescript';
-import { Slot } from 'src/slot/model/slot.model';
 import { Pricelist } from './pricelist.model';
 import { Venue } from './venue.model';
 
@@ -28,9 +26,6 @@ export class Field extends Model {
 
   @Column({ defaultValue: 'A' })
   status: string;
-
-  @HasMany(() => Slot, { as: 'slots' })
-  slots: Slot[];
 
   @ForeignKey(() => Venue)
   @Column({ type: DataType.UUID })

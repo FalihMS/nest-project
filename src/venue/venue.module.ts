@@ -11,9 +11,11 @@ import { VenueController } from './venue.controller';
 import { VenueService } from './service/venue.service';
 import { FieldService } from './service/field.service';
 import { PricelistService } from './service/pricelist.service';
+import { BookingModule } from '../booking/booking.module';
 
 @Module({
   imports: [
+    BookingModule,
     SequelizeModule.forFeature([
       Venue,
       Field,

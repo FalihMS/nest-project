@@ -1,23 +1,30 @@
 import { Module } from '@nestjs/common';
 import { RouterModule } from '@nestjs/core';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { SlotModule } from './slot/slot.module';
+import { BookingModule } from './booking/booking.module';
 import { VenueModule } from './venue/venue.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     VenueModule,
-    SlotModule,
-    SequelizeModule.forRoot({
-      dialect: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'nest',
-      password: 'password',
-      database: 'nest',
-      models: [],
-      autoLoadModels: true,
-      synchronize: true,
+    BookingModule,
+    ConfigModule.forRoot(),
+    SequelizeModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        dialect: 'mysql',
+        host: configService.get<string>('DB_HOST'),
+        port: configService.get<number>('DB_PORT'),
+        username: configService.get<string>('DB_USERNAME'),
+        password: configService.get<string>('DB_PASSWORD'),
+        database: configService.get<string>('DB_DATABASE'),
+        models: [],
+        logging: configService.get<string>('DB_LOGGING') == 'true',
+        autoLoadModels: true,
+        synchronize: true,
+      }),
+      inject: [ConfigService],
     }),
     RouterModule.register([
       {
@@ -25,8 +32,8 @@ import { VenueModule } from './venue/venue.module';
         module: VenueModule,
       },
       {
-        path: 'slot',
-        module: SlotModule,
+        path: 'booking',
+        module: BookingModule,
       },
     ]),
   ],
